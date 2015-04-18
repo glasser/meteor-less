@@ -29,7 +29,14 @@ Package.onUse(function(api) {
 });
 
 Package.onTest(function(api) {
-  api.use('tinytest');
   api.use('meteor-less');
-  api.addFiles('meteor-less-tests.js');
+  api.use(['tinytest', 'test-helpers']);
+  api.addFiles(['tests/top.less',
+                'tests/top2.less',
+                'tests/not-included.less',
+                'tests/dir/in-dir.less',
+                'tests/dir/in-dir2.less',
+                'tests/dir/root.main.less',
+                'tests/dir/subdir/in-subdir.less']);
+  api.addFiles('less_tests.js', 'client');
 });
