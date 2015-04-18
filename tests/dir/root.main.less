@@ -1,5 +1,5 @@
-@el1-style: dotted;  /* @import "/top.less"; */
-@el2-style: dashed;  /* @import "{local-test:meteor-less}/top2.less"; */
+@import "/tests/top.less";
+@import "{local-test:meteor-less}/tests/top2.less";
 @el3-style: solid;  /* @import "in-dir.less"; */
 @el4-style: double;  /* @import "./in-dir2.less"; */
 @el5-style: groove;  /* @import "subdir/in-subdir.less"; */
@@ -10,3 +10,4 @@
 .el3 { border-style: @el3-style; }
 .el4 { border-style: @el4-style; }
 .el5 { border-style: @el5-style; }
+.el6 { border-style: @el6-style; }

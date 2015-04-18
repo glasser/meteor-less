@@ -34,13 +34,23 @@ LessCompiler.prototype.processFilesForTarget = function (inputFiles) {
   _.each(mains, function (main) {
     var inputFile = main.inputFile;
     var absoluteImportPath = main.absoluteImportPath;
-    // XXX BBP less errors get turned into [object Object] by future.throw
     var f = new Future;
     less.render(inputFile.xxxContentsAsBuffer().toString('utf8'), {
       filename: absoluteImportPath,
       plugins: [importPlugin]
-    }, f.resolver());
-    var output = f.wait();
+    }, function (err, output) {
+      // why not just use f.resolver() here?  less's errors get turned into
+      // [object Object] by future.throw.  This will probably be fine once we
+      // add a inputFile.error() thingy.
+      // XXX BBP add a inputFile.error thingy
+      f.return([err, output]);
+    });
+    var errAndOutput = f.wait();
+    if (errAndOutput[0]) {
+      // XXX BBP use inputFile.error or something
+      throw errAndOutput[0];
+    }
+    var output = errAndOutput[1];
     // XXX BBP figure out source map
     // XXX BBP note that output.imports has a list of imports, which can
     //     be used for caching
@@ -77,7 +87,19 @@ _.extend(MeteorImportLessFileManager.prototype, {
 
   loadFile: function (filename, currentDirectory, options, environment, cb) {
     var self = this;
-    if (filename[0] !== '{') {
+    var packageMatch = currentDirectory.match(/^(\{[^}]*\})/);
+    if (! packageMatch) {
+      // shouldn't happen.  all filenames less ever sees should involve this {}
+      // thing!
+      // XXX BBP test nested imports
+      throw new Error("file without Meteor context? " + currentDirectory);
+    }
+    var currentPackagePrefix = packageMatch[1];
+
+    if (filename[0] === '/') {
+      // Map `/foo/bar.less` onto `{thispackage}/foo/bar.less`
+      filename = currentPackagePrefix + filename;
+    } else if (filename[0] !== '{') {
       // XXX BBP handle relative imports
       // XXX BBP better error handling!
       throw Error("all imports need to specify full package");

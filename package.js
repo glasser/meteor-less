@@ -33,6 +33,7 @@ Package.onTest(function(api) {
   api.use(['tinytest', 'test-helpers']);
   api.addFiles(['tests/top.less',
                 'tests/top2.less',
+                'tests/top3.less',
                 'tests/not-included.less',
                 'tests/dir/in-dir.less',
                 'tests/dir/in-dir2.less',
