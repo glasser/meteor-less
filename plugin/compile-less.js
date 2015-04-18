@@ -39,19 +39,18 @@ LessCompiler.prototype.processFilesForTarget = function (inputFiles) {
     less.render(inputFile.xxxContentsAsBuffer().toString('utf8'), {
       filename: absoluteImportPath,
       plugins: [importPlugin]
-    }, function (err, output) {
-      // why not just use f.resolver() here?  less's errors get turned into
-      // [object Object] by future.throw.  This will probably be fine once we
-      // add a inputFile.error() thingy.
-      // XXX BBP add a inputFile.error thingy
-      f.return([err, output]);
-    });
-    var errAndOutput = f.wait();
-    if (errAndOutput[0]) {
-      // XXX BBP use inputFile.error or something
-      throw errAndOutput[0];
+    }, f.resolver());
+    try {
+      var output = f.wait();
+    } catch (e) {
+      inputFile.xxxError({
+        message: e.message,
+        sourcePath: e.filename,  // XXX BBP this has {} and stuff, is that OK?
+        line: e.line,
+        column: e.column
+      });
+      return;  // go on to next file
     }
-    var output = errAndOutput[1];
     // XXX BBP figure out source map
     // XXX BBP note that output.imports has a list of imports, which can
     //     be used for caching
