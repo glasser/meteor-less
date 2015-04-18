@@ -15,7 +15,7 @@ var LessCompiler = function () {
 LessCompiler.prototype.processFilesForTarget = function (inputFiles) {
   var filesByAbsoluteImportPath = {};
   var mains = [];
-  // XXX BBP also implement package-relative imports
+
   inputFiles.forEach(function (inputFile) {
     var packageName = inputFile.xxxPackageName();
     var pathInPackage = inputFile.xxxPathInPackage();
@@ -92,7 +92,6 @@ _.extend(MeteorImportLessFileManager.prototype, {
     if (! packageMatch) {
       // shouldn't happen.  all filenames less ever sees should involve this {}
       // thing!
-      // XXX BBP test nested imports
       throw new Error("file without Meteor context? " + currentDirectory);
     }
     var currentPackagePrefix = packageMatch[1];
