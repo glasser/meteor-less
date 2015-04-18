@@ -1,5 +1,6 @@
 var less = Npm.require('less');
 var util = Npm.require('util');
+var path = Npm.require('path');
 var Future = Npm.require('fibers/future');
 
 Plugin.registerCompiler({
@@ -100,9 +101,7 @@ _.extend(MeteorImportLessFileManager.prototype, {
       // Map `/foo/bar.less` onto `{thispackage}/foo/bar.less`
       filename = currentPackagePrefix + filename;
     } else if (filename[0] !== '{') {
-      // XXX BBP handle relative imports
-      // XXX BBP better error handling!
-      throw Error("all imports need to specify full package");
+      filename = path.join(currentDirectory, filename);
     }
     if (! _.has(self.filesByAbsoluteImportPath, filename)) {
       // XXX BBP better error handling?

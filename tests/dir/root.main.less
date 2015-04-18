@@ -1,8 +1,8 @@
 @import "/tests/top.less";
 @import "{local-test:meteor-less}/tests/top2.less";
-@el3-style: solid;  /* @import "in-dir.less"; */
-@el4-style: double;  /* @import "./in-dir2.less"; */
-@el5-style: groove;  /* @import "subdir/in-subdir.less"; */
+@import "in-dir.less";
+@import "./in-dir2.less";
+@import "subdir/in-subdir.less";
 
 
 .el1 { border-style: @el1-style; }

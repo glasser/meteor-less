@@ -23,11 +23,6 @@ Package.registerBuildPlugin({
   }
 });
 
-Package.onUse(function(api) {
-//  api.versionsFrom('1.1.0.2');
-  api.addFiles('meteor-less.js');
-});
-
 Package.onTest(function(api) {
   api.use('meteor-less');
   api.use(['tinytest', 'test-helpers']);
