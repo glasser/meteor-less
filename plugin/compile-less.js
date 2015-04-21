@@ -38,7 +38,12 @@ LessCompiler.prototype.processFilesForTarget = function (inputFiles) {
     var f = new Future;
     less.render(inputFile.xxxContentsAsBuffer().toString('utf8'), {
       filename: absoluteImportPath,
-      plugins: [importPlugin]
+      plugins: [importPlugin],
+      // Generate a source map, and include the source files in the
+      // sourcesContent field.  (Note that source files which don't themselves
+      // produce text (eg, are entirely variable definitions) won't end up in
+      // the source map!)
+      sourceMap: { outputSourceFiles: true }
     }, f.resolver());
     try {
       var output = f.wait();
@@ -51,12 +56,13 @@ LessCompiler.prototype.processFilesForTarget = function (inputFiles) {
       });
       return;  // go on to next file
     }
-    // XXX BBP figure out source map
+
     // XXX BBP note that output.imports has a list of imports, which can
     //     be used for caching
     inputFile.addStylesheet({
       data: output.css,
-      path: inputFile.xxxPathInPackage() + '.css'
+      path: inputFile.xxxPathInPackage() + '.css',
+      sourceMap: output.map
     });
   });
 };
